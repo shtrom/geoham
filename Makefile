@@ -23,7 +23,7 @@ venv-install: venv
 		pip install -e .
 
 clean: clean-venv
-real-clean: clean-dist clean
+real-clean: clean-data clean-dist clean
 	rm -rf *.egg-info/
 
 clean-build:
@@ -32,6 +32,8 @@ clean-dist:
 	rm -rf dist
 clean-venv:
 	rm -rf $(VENV)
+clean-data:
+	rm -rf *.csv
 
 .PHONY: all dist \
 	install-dev \
