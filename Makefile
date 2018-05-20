@@ -24,6 +24,7 @@ venv-install: venv
 
 clean: clean-venv
 real-clean: clean-dist clean
+	rm -rf *.egg-info/
 
 clean-build:
 	rm -rf build
