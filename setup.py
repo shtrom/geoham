@@ -18,7 +18,7 @@ setup(name='geoham',
       packages=['geoham'],
       install_requires=reqs,
       entry_points={
-          'console_scripts'; [
+          'console_scripts': [
               'geoham = geoham.cli:main'
           ]
       },
