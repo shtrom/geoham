@@ -1,4 +1,7 @@
 import csv
+import logging
+
+from .loggable_trait import LoggableTrait
 
 REPEATER_OUTPUT       = 'Output'
 REPEATER_INPUT        = 'Input'
@@ -16,8 +19,37 @@ REPEATER_SP           = 'Sp'
 REPEATER_TONE         = 'Tone'
 REPEATER_NOTES        = 'Notes'
 
-class Parser:
+NUM_FIELDS = [
+    REPEATER_OUTPUT,
+    REPEATER_INPUT,
+    REPEATER_LATITUDE,
+    REPEATER_LONGITUDE,
+    REPEATER_S,
+    REPEATER_ERP,
+    REPEATER_HASL,
+    REPEATER_TO,
+    REPEATER_TONE,
+]
+
+class Parser(LoggableTrait):
+    def __init__(self):
+        self.init_logger(__name__)
+
     def parse(self, file):
         reader = csv.DictReader(file)
 
-        return list(reader)
+        return list(self._fix_types(reader))
+
+    def _fix_types(self, data):
+        for row in data:
+            try:
+                for field in NUM_FIELDS:
+                    row[field] = float(row[field])
+            except ValueError:
+                self._logger.warning('Cannot convert field `%s` value `%s` to float in `%s`' % (
+                    field,
+                    row[field],
+                    row,
+                ))
+                continue
+            yield row
