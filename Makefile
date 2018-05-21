@@ -7,12 +7,10 @@ endef
 
 all: dist
 
-dist: install-dev
+dist: venv-install
 	$(call activate); \
 		$(PYTHON) setup.py sdist; \
 		$(PYTHON) setup.py bdist
-
-install-dev: venv-install
 
 venv: $(VENV)
 $(VENV):
@@ -21,6 +19,7 @@ $(VENV):
 venv-install: venv
 	$(call activate); \
 		pip install -e .
+	@echo "Enter Virtualenv with '. $(VENV)/bin/activate'"
 
 clean: clean-venv
 real-clean: clean-data clean-dist clean
@@ -36,7 +35,6 @@ clean-data:
 	rm -rf *.csv
 
 .PHONY: all dist \
-	install-dev \
 	venv venv-install \
 	clean real-clean \
 	clean-build clean-dist clean-venv
