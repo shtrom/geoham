@@ -4,12 +4,12 @@ import logging
 from geoham.downloader import Downloader
 
 @click.group()
-@click.option('--log_level', '-l', default='info')
+@click.option('--log_level', '-l', default='info',
+              help='Set the log level [critical, error, warning, info, debug]')
 def main(log_level):
-    click.echo('main')
     logging.basicConfig(level=log_level.upper())
 
-@main.command()
+@main.command(help='Download the data')
 def download():
     downloader = Downloader()
     downloader.download()
