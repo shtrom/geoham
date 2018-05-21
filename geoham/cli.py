@@ -2,6 +2,7 @@ import click
 import json
 import logging
 
+from geoham.displayer import Displayer
 from geoham.downloader import Downloader
 from geoham.parser import Parser
 
@@ -17,8 +18,16 @@ def download():
     downloader.download()
 
 @main.command(help='Parse the data')
-@click.argument('file', type=click.File('rb'))
+@click.argument('file', type=click.File('r'))
 def parse(file):
     parser = Parser()
     data = parser.parse(file)
     print(json.dumps(data))
+
+@main.command(help='Display the data')
+@click.argument('file', type=click.File('r'))
+def display(file):
+    parser = Parser()
+    data = parser.parse(file)
+    displayer = Displayer()
+    displayer.display(data)
