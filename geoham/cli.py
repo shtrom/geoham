@@ -2,7 +2,7 @@ import click
 import json
 import logging
 
-from geoham.displayer import Displayer
+from geoham.displayer import Displayer, LeafletDisplayer
 from geoham.downloader import Downloader
 from geoham.parser import Parser
 
@@ -30,4 +30,12 @@ def display(file):
     parser = Parser()
     data = parser.parse(file)
     displayer = Displayer()
+    displayer.display(data)
+
+@main.command(help='Display the data on a map')
+@click.argument('file', type=click.File('r'))
+def map(file):
+    parser = Parser()
+    data = parser.parse(file)
+    displayer = LeafletDisplayer()
     displayer.display(data)
