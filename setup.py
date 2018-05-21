@@ -10,6 +10,7 @@ setup(name='geoham',
       packages=['geoham'],
       install_requires=[
           'Click',
+          'folium',
       ],
       entry_points={
           'console_scripts': [
