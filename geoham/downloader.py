@@ -1,4 +1,7 @@
 import logging
+
+from .loggable_trait import LoggableTrait
+
 try:
     # Python 3
     from urllib.request import urlretrieve
@@ -6,14 +9,12 @@ except ModuleNotFoundError:
     # Python 2
     from urllib import urlretrieve
 
-class Downloader:
-
-    _logger = None
+class Downloader(LoggableTrait): # not awesome...
 
     _url='http://www.wia.org.au/members/repeaters/data/documents/Repeater%20Directory%20180318.csv'
 
     def __init__(self):
-        self._logger = logging.getLogger(__name__)
+        self.init_logger(__name__)
 
     def download(self):
         outfile = self._url.split('/')
