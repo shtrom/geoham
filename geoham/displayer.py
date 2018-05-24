@@ -25,24 +25,36 @@ class LeafletDisplayer(Displayer,LoggableTrait):
     def __init__(self):
         Displayer.__init__(self)
         self.init_logger(__name__)
+
     def display(self, data):
         m = folium.Map()
         self.render(m, data)
         print(m)
+        return m
 
     def render(self, map, data):
         for row in data:
             if len(row[parser.REPEATER_CALL]) < 1:
                 continue
 
+                    # Out: %s / In: %s (%s)''' % (
+                        # row[parser.REPEATER_INPUT] - row[parser.REPEATER_OUTPUT],
+            html = '''<b>%s</b><br>
+                    Out: %s MHz / In: %s MHz''' % (
+                        row[parser.REPEATER_CALL],
+                        row[parser.REPEATER_OUTPUT],
+                        row[parser.REPEATER_INPUT],
+                    )
+
+            if row[parser.REPEATER_TONE] is not None:
+                html += '''<br>
+                        Tone: %s kHz''' % row[parser.REPEATER_TONE]
+
+            # html += '<br>' + str(row)
+
             folium.Marker(
                 [row[parser.REPEATER_LATITUDE], row[parser.REPEATER_LONGITUDE]],
-                popup=(
-                    '%s\nIn: %sOut: %s' % (
-                        row[parser.REPEATER_CALL],
-                        row[parser.REPEATER_INPUT],
-                        row[parser.REPEATER_OUTPUT],
-                    ))
+                popup=html
             ).add_to(map)
 
         return map

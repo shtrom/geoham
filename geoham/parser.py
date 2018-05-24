@@ -44,12 +44,19 @@ class Parser(LoggableTrait):
         for row in data:
             try:
                 for field in NUM_FIELDS:
-                    row[field] = float(row[field])
+                    try:
+                        row[field] = float(row[field])
+                    except ValueError as e:
+                        self._logger.warning('Cannot convert field `%s` value `%s` to float in `%s`' % (
+                            field,
+                            row[field],
+                            row,
+                        ))
+                        if field in (REPEATER_LATITUDE, REPEATER_LONGITUDE):
+                            raise e
+                        continue
+
             except ValueError:
-                self._logger.warning('Cannot convert field `%s` value `%s` to float in `%s`' % (
-                    field,
-                    row[field],
-                    row,
-                ))
                 continue
+
             yield row
