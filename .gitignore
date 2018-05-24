@@ -8,3 +8,4 @@ MANIFEST
 *.egg-info
 
 *.csv
+.ipynb_checkpoints
