@@ -1,4 +1,5 @@
 import folium
+import folium.plugins
 
 from . import parser
 from .loggable_trait import LoggableTrait
@@ -28,7 +29,11 @@ class LeafletDisplayer(Displayer,LoggableTrait):
 
     def display(self, data):
         m = folium.Map()
-        self.render(m, data)
+        g = folium.FeatureGroup(name='Repeaters')
+        c = folium.plugins.MarkerCluster()
+        self.render(c, data)
+        g.add_child(c)
+        m.add_child(g)
         return m
 
     def render(self, map, data):
