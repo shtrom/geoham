@@ -34,8 +34,12 @@ def display(file):
 
 @main.command(help='Display the data on a map')
 @click.argument('file', type=click.File('r'))
-def map(file):
+@click.argument('out', type=click.File('wb'))
+def map(file, out):
     parser = Parser()
     data = parser.parse(file)
+    click.echo('Rendering map...', err=True)
     displayer = LeafletDisplayer()
-    displayer.display(data)
+    map = displayer.display(data)
+    map.save(out)
+

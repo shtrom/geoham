@@ -29,7 +29,6 @@ class LeafletDisplayer(Displayer,LoggableTrait):
     def display(self, data):
         m = folium.Map()
         self.render(m, data)
-        print(m)
         return m
 
     def render(self, map, data):
