@@ -11,6 +11,7 @@ setup(name='geoham',
       install_requires=[
           'Click',
           'folium',
+          'pandas',
       ],
       entry_points={
           'console_scripts': [

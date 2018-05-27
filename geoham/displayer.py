@@ -1,6 +1,8 @@
 import folium
 import folium.plugins
 
+import math
+
 from . import parser
 from .loggable_trait import LoggableTrait
 
@@ -50,9 +52,9 @@ class LeafletDisplayer(Displayer,LoggableTrait):
                         row[parser.REPEATER_INPUT],
                     )
 
-            if row[parser.REPEATER_TONE] is not None:
+            if isdefined(row[parser.REPEATER_TONE]):
                 html += '''<br>
-                        Tone: %s kHz''' % row[parser.REPEATER_TONE]
+                        Tone: {Tone} kHz'''.format(**row)
 
             # html += '<br>' + str(row)
 
@@ -62,3 +64,7 @@ class LeafletDisplayer(Displayer,LoggableTrait):
             ).add_to(map)
 
         return map
+
+def isdefined(value):
+  return value is not None and \
+         not (isinstance(value, float) and math.isnan(value))

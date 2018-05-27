@@ -21,14 +21,14 @@ def download():
 @click.argument('file', type=click.File('r'))
 def parse(file):
     parser = Parser()
-    data = parser.parse(file)
+    data, skipped = parser.parse(file)
     print(json.dumps(data))
 
 @main.command(help='Display the data')
 @click.argument('file', type=click.File('r'))
 def display(file):
     parser = Parser()
-    data = parser.parse(file)
+    data, skipped = parser.parse(file)
     displayer = Displayer()
     displayer.display(data)
 
@@ -37,7 +37,7 @@ def display(file):
 @click.argument('out', type=click.File('wb'))
 def map(file, out):
     parser = Parser()
-    data = parser.parse(file)
+    data, skipped = parser.parse(file)
     click.echo('Rendering map...', err=True)
     displayer = LeafletDisplayer()
     map = displayer.display(data)
