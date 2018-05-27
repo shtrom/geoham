@@ -43,20 +43,25 @@ class LeafletDisplayer(Displayer,LoggableTrait):
             if len(row[parser.REPEATER_CALL]) < 1:
                 continue
 
-                    # Out: %s / In: %s (%s)''' % (
-                        # row[parser.REPEATER_INPUT] - row[parser.REPEATER_OUTPUT],
-            html = '''<b>%s</b><br>
-                    Out: %s MHz / In: %s MHz''' % (
-                        row[parser.REPEATER_CALL],
-                        row[parser.REPEATER_OUTPUT],
-                        row[parser.REPEATER_INPUT],
-                    )
+            html = ''
+
+            if isdefined(row[parser.REPEATER_MNEMONIC]):
+                html = '''<b>{mNemonic} ({Call})</b>'''.format(**row)
+            else:
+                html = '''<b>{Call}</b>'''.format(**row)
+
+            if isdefined(row[parser.REPEATER_LOCATION]):
+                if isdefined(row[parser.REPEATER_SERVICE_AREA]):
+                    html += '''<br>Location: {Location} ({Service Area})'''.format(**row)
+                else:
+                html += '''<br>Location: {Location}'''.format(**row)
+
+            html+='''<br>Out: {Output} MHz / In: {Input} MHz'''.format(**row)
 
             if isdefined(row[parser.REPEATER_TONE]):
-                html += '''<br>
-                        Tone: {Tone} kHz'''.format(**row)
+                html += '''<br>Tone: {Tone} kHz'''.format(**row)
 
-            # html += '<br>' + str(row)
+            # TODO: need html encoding
 
             folium.Marker(
                 [row[parser.REPEATER_LATITUDE], row[parser.REPEATER_LONGITUDE]],
