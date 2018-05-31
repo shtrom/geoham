@@ -1,6 +1,7 @@
 import folium
 import folium.plugins
 
+import html
 import math
 
 from . import parser
@@ -36,39 +37,47 @@ class LeafletDisplayer(Displayer,LoggableTrait):
         self.render(c, data)
         g.add_child(c)
         m.add_child(g)
+
+        m.fit_bounds([
+            [ min(data.data[parser.REPEATER_LATITUDE]), min(data.data[parser.REPEATER_LONGITUDE])],
+            [ max(data.data[parser.REPEATER_LATITUDE]), max(data.data[parser.REPEATER_LONGITUDE])]
+        ])
+
         return m
 
-    def render(self, map, data):
+    def render(self, m, data):
         for row in data:
             if len(row[parser.REPEATER_CALL]) < 1:
                 continue
 
-            html = ''
+            popup_html = ''
 
             if isdefined(row[parser.REPEATER_MNEMONIC]):
-                html = '''<b>{mNemonic} ({Call})</b>'''.format(**row)
+                contents = '''{mNemonic} ({Call})'''.format(**row)
             else:
-                html = '''<b>{Call}</b>'''.format(**row)
+                contents = '''{Call}'''.format(**row)
+            popup_html = '''<b>%s</b>''' % html.escape(contents)
 
             if isdefined(row[parser.REPEATER_LOCATION]):
                 if isdefined(row[parser.REPEATER_SERVICE_AREA]):
-                    html += '''<br>Location: {Location} ({Service Area})'''.format(**row)
+                    contents = '''Location: {Location} ({Service Area})'''.format(**row)
                 else:
-                html += '''<br>Location: {Location}'''.format(**row)
+                    contents = '''Location: {Location}'''.format(**row)
+                popup_html += '''<br>%s''' % html.escape(contents)
 
-            html+='''<br>Out: {Output} MHz / In: {Input} MHz'''.format(**row)
+            contents ='''Out: {Output} MHz / In: {Input} MHz'''.format(**row)
+            popup_html += '''<br>%s''' % html.escape(contents)
 
             if isdefined(row[parser.REPEATER_TONE]):
-                html += '''<br>Tone: {Tone} kHz'''.format(**row)
-
-            # TODO: need html encoding
+                contents = '''Tone: {Tone} kHz'''.format(**row)
+                popup_html += '''<br>%s''' % html.escape(contents)
 
             folium.Marker(
                 [row[parser.REPEATER_LATITUDE], row[parser.REPEATER_LONGITUDE]],
-                popup=html
-            ).add_to(map)
+                popup=popup_html
+            ).add_to(m)
 
-        return map
+        return m
 
 def isdefined(value):
   return value is not None and \
