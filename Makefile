@@ -7,6 +7,11 @@ endef
 
 all: dist
 
+test:
+	$(call activate); \
+		pip install pytest; \
+		pytest --doctest-modules
+
 dist: venv-install
 	$(call activate); \
 		$(PYTHON) setup.py sdist; \

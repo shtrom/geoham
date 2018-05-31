@@ -13,6 +13,7 @@ setup(name='geoham',
           'folium',
           'pandas',
       ],
+      tests_requires=['pytest'],
       entry_points={
           'console_scripts': [
               'geoham = geoham.cli:main'
