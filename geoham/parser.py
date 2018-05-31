@@ -21,6 +21,8 @@ REPEATER_SPONSOR      = 'Sponsor'
 REPEATER_TONE         = 'Tone'
 REPEATER_NOTES        = 'Notes'
 
+REPEATER_BAND         = 'Band'
+
 FIELD_TYPES = {
     REPEATER_OUTPUT: np.float64,
     REPEATER_INPUT: np.float64,
@@ -77,7 +79,7 @@ class Parser(LoggableTrait):
             & data[REPEATER_LONGITUDE].notnull()
         )]
 
-        data['Band'] = self.band_service.band_from_frequency(data[REPEATER_OUTPUT])
+        data[REPEATER_BAND] = self.band_service.band_from_frequency_series(data[REPEATER_OUTPUT])
 
         return (IterableDataFrame(data), IterableDataFrame(skipped_data))
 
