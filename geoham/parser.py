@@ -22,6 +22,7 @@ REPEATER_TONE         = 'Tone'
 REPEATER_NOTES        = 'Notes'
 
 REPEATER_BAND         = 'Band'
+REPEATER_OFFSET       = 'Offset'
 
 FIELD_TYPES = {
     REPEATER_OUTPUT: np.float64,
@@ -80,6 +81,8 @@ class Parser(LoggableTrait):
         )]
 
         data[REPEATER_BAND] = self.band_service.band_from_frequency_series(data[REPEATER_OUTPUT])
+
+        data[REPEATER_OFFSET] = round(data[REPEATER_INPUT] - data[REPEATER_OUTPUT],3)
 
         return (IterableDataFrame(data), IterableDataFrame(skipped_data))
 
