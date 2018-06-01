@@ -1,5 +1,4 @@
 import click
-import json
 import logging
 
 from geoham.displayer import Displayer, LeafletDisplayer
@@ -22,7 +21,7 @@ def download():
 def parse(file):
     parser = Parser()
     data, skipped = parser.parse(file)
-    print(json.dumps(data))
+    print(data.to_json(orient='records'))
 
 @main.command(help='Display the data')
 @click.argument('file', type=click.File('r'))

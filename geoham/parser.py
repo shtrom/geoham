@@ -84,7 +84,7 @@ class Parser(LoggableTrait):
 
         data[REPEATER_OFFSET] = round(data[REPEATER_INPUT] - data[REPEATER_OUTPUT],3)
 
-        return (IterableDataFrame(data), IterableDataFrame(skipped_data))
+        return data, skipped_data
 
 class BandService:
     # Band name to lower-ish frequency [MHz] mapping
@@ -120,26 +120,3 @@ class BandService:
             if (f // self.BANDS[b]) == 1.0:
                 return b
         return "%fMHz" % f
-
-class IterableDataFrame:
-    """
-        Decorator for a Pandas DataFrame making it more practically iterable
-        (i.e., not using iterrows()).
-    """
-    data = None
-
-    def __init__(self, pandasDataframe):
-        self.data = pandasDataframe
-
-    def __iter__(self):
-        for row in self.data.iterrows():
-            yield row[1]
-
-    def __len__(self):
-        return len(self.data)
-
-    def __repr__(self):
-        return repr(self.data)
-
-    def __str__(self):
-        return str(self.data)

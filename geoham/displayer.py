@@ -39,14 +39,15 @@ class LeafletDisplayer(Displayer,LoggableTrait):
         m.add_child(g)
 
         m.fit_bounds([
-            [ min(data.data[parser.REPEATER_LATITUDE]), min(data.data[parser.REPEATER_LONGITUDE])],
-            [ max(data.data[parser.REPEATER_LATITUDE]), max(data.data[parser.REPEATER_LONGITUDE])]
+            [ min(data[parser.REPEATER_LATITUDE]), min(data[parser.REPEATER_LONGITUDE])],
+            [ max(data[parser.REPEATER_LATITUDE]), max(data[parser.REPEATER_LONGITUDE])]
         ])
 
         return m
 
     def render(self, m, data):
-        for row in data:
+        for row in data.iterrows():
+            row = row[1]
             if len(row[parser.REPEATER_CALL]) < 1:
                 continue
 
