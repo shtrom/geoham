@@ -65,7 +65,7 @@ class LeafletDisplayer(Displayer,LoggableTrait):
                     contents = '''Location: {Location}'''.format(**row)
                 popup_html += '''<br>%s''' % html.escape(contents)
 
-            contents ='''Out: {Output} MHz / In: {Input} MHz'''.format(**row)
+            contents ='''Out: {Output} MHz / In: {Input} MHz ({Offset} MHz)'''.format(**row)
             popup_html += '''<br>%s''' % html.escape(contents)
 
             if isdefined(row[parser.REPEATER_TONE]):
