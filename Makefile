@@ -23,6 +23,7 @@ $(VENV):
 
 venv-install: venv
 	$(call activate); \
+		pip install -r requirements.txt; \
 		pip install -e .
 	@echo "Enter Virtualenv with '. $(VENV)/bin/activate'"
 

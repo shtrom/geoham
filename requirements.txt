@@ -6,8 +6,8 @@ chardet==3.0.4
 click==6.7
 decorator==4.3.0
 entrypoints==0.2.3
-folium==0.5.0
--e git+scm.narf.ssji.net:/git/geoham.git@b8eee7fea83d10d88e9f8e56dca7f61222d5b9ba#egg=geoham
+#folium==0.5.0
+-e git+https://github.com/shtrom/folium@d5c334283b20a81547f69b7c3b7a083e23afe15d#egg=folium
 html5lib==1.0.1
 idna==2.6
 ipykernel==4.8.2
