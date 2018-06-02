@@ -26,24 +26,57 @@ class Displayer:
                   ))
 
 class LeafletDisplayer(Displayer,LoggableTrait):
+    colors = [
+            'red',
+            'blue',
+            'gray',
+            'darkred',
+            'lightred',
+            'orange',
+            'beige',
+            'green',
+            'darkgreen',
+            'lightgreen',
+            'darkblue',
+            'lightblue',
+            'purple',
+            'darkpurple',
+            'pink',
+            'cadetblue',
+            'lightgray',
+            'black'
+    ]
+
     def __init__(self):
         Displayer.__init__(self)
         self.init_logger(__name__)
 
     def display(self, data):
         m = folium.Map()
-        g = folium.FeatureGroup(name='Repeaters')
-        c = folium.plugins.MarkerCluster()
-        self.render(c, data)
-        g.add_child(c)
-        m.add_child(g)
+
+        band_group = data.groupby(parser.REPEATER_BAND)
+        c = folium.plugins.MarkerCluster(control=False)
+        groups = band_group.apply(self.render_group, m, c)
+
+        m.add_child(c)
+        for sg in groups:
+            m.add_child(sg)
 
         m.fit_bounds([
             [ min(data[parser.REPEATER_LATITUDE]), min(data[parser.REPEATER_LONGITUDE])],
             [ max(data[parser.REPEATER_LATITUDE]), max(data[parser.REPEATER_LONGITUDE])]
         ])
 
+        folium.LayerControl().add_to(m)
+
         return m
+
+    def render_group(self, data, m, g):
+        sg = folium.plugins.FeatureGroupSubGroup(g,
+                                                 name=data[parser.REPEATER_BAND].unique()[0])
+        self.render(sg, data)
+
+        return sg
 
     def render(self, m, data):
         for row in data.iterrows():
@@ -75,7 +108,12 @@ class LeafletDisplayer(Displayer,LoggableTrait):
 
             folium.Marker(
                 [row[parser.REPEATER_LATITUDE], row[parser.REPEATER_LONGITUDE]],
-                popup=popup_html
+                popup=popup_html,
+                icon=folium.Icon(
+                    # color=self.colors[6],
+                    # prefix='fa',
+                    icon='wifi-alt'
+                )
             ).add_to(m)
 
         return m
