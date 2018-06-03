@@ -1,5 +1,4 @@
 * Output list for location proximity
+** CHIRP-compatible CSV
 ** Multiple waypoints
 ** Number limit
-** CHIRP-compatible CSV
-* Calculate map boundaries from repeater list
