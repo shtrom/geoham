@@ -117,7 +117,9 @@ class LeafletDisplayer(Displayer,LoggableTrait):
                 icon=folium.Icon(
                     color=color,
                     # prefix='fa',
-                    icon='wifi-alt'
+                    # icon='broadcast-tower'
+                    # icon='wifi-alt' # Not in bootstrap 3.2.0
+                    icon='signal'
                 )
             ).add_to(m)
 
