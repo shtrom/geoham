@@ -60,6 +60,7 @@ class Parser(LoggableTrait):
                              dtype=FIELD_TYPES,
                              na_values = NA_FIELDS,
                              header=0,
+                             usecols=(list(range(len(FIELD_TYPES)))),
                              error_bad_lines=False, # XXX: This will drop rows with too many notes
                              warn_bad_lines=self._logger.isEnabledFor(logging.WARNING)
                              )
