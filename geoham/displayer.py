@@ -54,9 +54,10 @@ class LeafletDisplayer(Displayer,LoggableTrait):
     def display(self, data):
         m = folium.Map()
 
+        all_bands = data.Band.unique()
         band_group = data.groupby(parser.REPEATER_BAND)
         c = folium.plugins.MarkerCluster(control=False)
-        groups = band_group.apply(self.render_group, m, c)
+        groups = band_group.apply(self.render_group, m, c, all_bands)
 
         m.add_child(c)
         for sg in groups:
@@ -71,14 +72,16 @@ class LeafletDisplayer(Displayer,LoggableTrait):
 
         return m
 
-    def render_group(self, data, m, g):
-        sg = folium.plugins.FeatureGroupSubGroup(g,
-                                                 name=data[parser.REPEATER_BAND].unique()[0])
-        self.render(sg, data)
+    def render_group(self, data, m, g, all_bands):
+        band = data[parser.REPEATER_BAND].unique()[0]
+        color_index = all_bands.tolist().index(band)
+        sg = folium.plugins.FeatureGroupSubGroup(g, name=band)
+
+        self.render(sg, data, color_index=color_index)
 
         return sg
 
-    def render(self, m, data):
+    def render(self, m, data, color_index=1):
         for row in data.iterrows():
             row = row[1]
             if len(row[parser.REPEATER_CALL]) < 1:
@@ -106,11 +109,13 @@ class LeafletDisplayer(Displayer,LoggableTrait):
                 contents = '''Tone: {Tone} kHz'''.format(**row)
                 popup_html += '''<br>%s''' % html.escape(contents)
 
+            color = self.colors[color_index % len(self.colors)]
+
             folium.Marker(
                 [row[parser.REPEATER_LATITUDE], row[parser.REPEATER_LONGITUDE]],
                 popup=popup_html,
                 icon=folium.Icon(
-                    # color=self.colors[6],
+                    color=color,
                     # prefix='fa',
                     icon='wifi-alt'
                 )
