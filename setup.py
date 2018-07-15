@@ -10,7 +10,7 @@ setup(name='geoham',
       packages=['geoham'],
       install_requires=[
           'Click',
-          'folium',
+          'folium', #>0.5.0', # 0.5.0 doesn't have the necessary FeatureGroupSubGroup plugin yet
           'pandas',
       ],
       tests_requires=['pytest'],
