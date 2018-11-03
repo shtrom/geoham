@@ -9,3 +9,4 @@ MANIFEST
 
 *.csv
 .ipynb_checkpoints
+.eggs/*

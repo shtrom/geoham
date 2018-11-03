@@ -6,8 +6,7 @@ chardet==3.0.4
 click==6.7
 decorator==4.3.0
 entrypoints==0.2.3
-#folium==0.6.0 # maybe?
--e git+https://github.com/python-visualization/folium@5bcb7b93e57965104d9044355969359c7dd9ec4b#egg=folium
+folium>=0.6.0
 html5lib==1.0.1
 idna==2.6
 ipykernel==4.8.2
