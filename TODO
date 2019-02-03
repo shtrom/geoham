@@ -1,3 +1,5 @@
+* Unified data model
+* Search repeaters by frequencies
 * Output list for location proximity
 ** CHIRP-compatible CSV
 ** Multiple waypoints
