@@ -5,24 +5,28 @@ import logging
 
 from .loggable_trait import LoggableTrait
 
-REPEATER_OUTPUT       = 'Output'
-REPEATER_INPUT        = 'Input'
-REPEATER_CALL         = 'Call'
-REPEATER_MNEMONIC     = 'mNemonic'
-REPEATER_LOCATION     = 'Location'
-REPEATER_SERVICE_AREA = 'Service Area'
-REPEATER_LATITUDE     = 'Latitude'
-REPEATER_LONGITUDE    = 'Longitude'
-REPEATER_STATUS       = 'Status'
-REPEATER_ERP          = 'ERP'
-REPEATER_HASL         = 'HASL'
-REPEATER_TO           = 'T/O'
-REPEATER_SPONSOR      = 'Sponsor'
-REPEATER_TONE         = 'Tone'
-REPEATER_NOTES        = 'Notes'
+from . import chirp
 
-REPEATER_BAND         = 'Band'
-REPEATER_OFFSET       = 'Offset'
+REPEATER_OUTPUT = 'Output'
+REPEATER_INPUT = 'Input'
+REPEATER_CALL = 'Call'
+REPEATER_MNEMONIC = 'mNemonic'
+REPEATER_LOCATION = 'Location'
+REPEATER_SERVICE_AREA = 'Service Area'
+REPEATER_LATITUDE = 'Latitude'
+REPEATER_LONGITUDE = 'Longitude'
+REPEATER_STATUS = 'Status'
+REPEATER_ERP = 'ERP'
+REPEATER_HASL = 'HASL'
+REPEATER_TO = 'T/O'
+REPEATER_SPONSOR = 'Sponsor'
+REPEATER_TONE = 'Tone'
+REPEATER_NOTES = 'Notes'
+
+# Calculated fields
+REPEATER_BAND = 'Band'
+REPEATER_DUPLEX = 'Duplex'
+REPEATER_OFFSET = 'Offset'
 
 FIELD_TYPES = {
     REPEATER_OUTPUT: np.float64,
@@ -42,9 +46,31 @@ FIELD_TYPES = {
     REPEATER_NOTES: np.character,
 }
 
-NA_FIELDS = [ '-', 'Various', '?' ]
+FIELD_MAPPING = {
+    REPEATER_OUTPUT: chirp.FREQ,
+    REPEATER_INPUT: None,
+    REPEATER_CALL: chirp.NAME,
+    REPEATER_MNEMONIC: chirp.COMMENT,
+    REPEATER_LOCATION: chirp.COMMENT,
+    REPEATER_SERVICE_AREA: chirp.COMMENT,
+    REPEATER_LATITUDE: chirp.COMMENT,
+    REPEATER_LONGITUDE: chirp.COMMENT,
+    REPEATER_STATUS: chirp.COMMENT,
+    REPEATER_ERP: chirp.COMMENT,
+    REPEATER_HASL: chirp.COMMENT,
+    REPEATER_TO: chirp.COMMENT,
+    REPEATER_SPONSOR: chirp.COMMENT,
+    REPEATER_TONE: chirp.TONE,
+    REPEATER_NOTES: chirp.COMMENT,
 
-NUM_FIELDS = [ k for k in FIELD_TYPES.keys() if FIELD_TYPES[k] == np.float64 ]
+    # Calculated fields
+    REPEATER_DUPLEX: chirp.OFFSET,
+    REPEATER_OFFSET: chirp.OFFSET,
+}
+
+NA_FIELDS = ['-', 'Various', '?']
+
+NUM_FIELDS = [k for k in FIELD_TYPES.keys() if FIELD_TYPES[k] == np.float64]
 
 
 class Parser(LoggableTrait):
@@ -53,17 +79,19 @@ class Parser(LoggableTrait):
     def __init__(self):
         self.init_logger(__name__)
         self.band_service = BandService()
+        self.chirp_mapping = chirp.Mapping(FIELD_MAPPING)
 
     def parse(self, file):
         data = pd.read_csv(file,
-                             names=FIELD_TYPES.keys(),
-                             dtype=FIELD_TYPES,
-                             na_values = NA_FIELDS,
-                             header=0,
-                             usecols=(list(range(len(FIELD_TYPES)))),
-                             error_bad_lines=False, # XXX: This will drop rows with too many notes
-                             warn_bad_lines=self._logger.isEnabledFor(logging.WARNING)
-                             )
+                           names=FIELD_TYPES.keys(),
+                           dtype=FIELD_TYPES,
+                           na_values=NA_FIELDS,
+                           header=0,
+                           usecols=(list(range(len(FIELD_TYPES)))),
+                           error_bad_lines=False,  # XXX: This will drop rows with too many notes
+                           warn_bad_lines=self._logger.isEnabledFor(
+                               logging.WARNING)
+                           )
 
         skipped_data = data[(
             data[REPEATER_CALL].isnull()
@@ -81,11 +109,16 @@ class Parser(LoggableTrait):
             & data[REPEATER_LONGITUDE].notnull()
         )]
 
-        data[REPEATER_BAND] = self.band_service.band_from_frequency_series(data[REPEATER_OUTPUT])
+        data[REPEATER_BAND] = self.band_service.band_from_frequency_series(
+            data[REPEATER_OUTPUT])
 
-        data[REPEATER_OFFSET] = round(data[REPEATER_INPUT] - data[REPEATER_OUTPUT],3)
+        offsets = round(data[REPEATER_INPUT] - data[REPEATER_OUTPUT], 3)
+        # '-' if offsets < 0 else '+'
+        data[REPEATER_DUPLEX] = abs(offsets)/offsets
+        data[REPEATER_OFFSET] = abs(offsets)
 
-        return data, skipped_data
+        return self.chirp_mapping.remap(data), skipped_data
+
 
 class BandService:
     # Band name to lower-ish frequency [MHz] mapping
