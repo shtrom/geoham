@@ -9,7 +9,7 @@ entrypoints==0.2.3
 folium>=0.6.0
 html5lib==1.0.1
 idna==2.8
-ipykernel==4.8.2
+ipykernel==5.1.1
 ipython==7.5.0
 ipython-genutils==0.2.0
 ipywidgets==7.4.2
