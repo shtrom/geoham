@@ -28,7 +28,7 @@ notebook==5.5.0
 numpy==1.14.3
 pandas==0.23.0
 pandocfilters==1.4.2
-parso==0.2.1
+parso==0.4.0
 pexpect==4.5.0
 pickleshare==0.7.4
 prompt-toolkit==1.0.15
