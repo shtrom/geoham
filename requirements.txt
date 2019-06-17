@@ -34,7 +34,7 @@ pickleshare==0.7.4
 prompt-toolkit==1.0.15
 ptyprocess==0.5.2
 Pygments==2.4.2
-python-dateutil==2.7.3
+python-dateutil==2.8.0
 pytz==2018.4
 pyzmq==18.0.1
 qtconsole==4.3.1
