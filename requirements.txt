@@ -37,7 +37,7 @@ Pygments==2.4.2
 python-dateutil==2.8.0
 pytz==2019.1
 pyzmq==18.0.2
-qtconsole==4.5.1
+qtconsole==4.5.2
 requests==2.22.0
 Send2Trash==1.5.0
 simplegeneric==0.8.1
