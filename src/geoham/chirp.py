@@ -93,7 +93,7 @@ class Mapping:
         out_columns = {}
         for k in df.keys():
             if k in self.mapping.keys:
-                chirp_field = selt.mapping[k]
+                chirp_field = self.mapping[k]
                 if chirp_field is not None:
                     out_columns[chirp_field] = self._array_new_append(k,
                                                                   out_columns[chirp_field])
