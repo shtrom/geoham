@@ -11,7 +11,7 @@ except ModuleNotFoundError:
 
 class Downloader(LoggableTrait): # not awesome...
 
-    _url='http://www.wia.org.au/members/repeaters/data/documents/Repeater%20Directory%20190104.csv'
+    _url='https://www.wia.org.au/members/repeaters/data/documents/Repeater%20Directory%20231229.csv'
 
     def __init__(self):
         self.init_logger(__name__)
