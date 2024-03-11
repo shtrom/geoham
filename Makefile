@@ -1,33 +1,32 @@
-VENV=.venv/geoham
 PYTHON=python3
-
-define activate
-. $(VENV)/bin/activate
-endef
-define deactivate
-deactivate || true
-endef
+VENV=.venv/geoham
+VENV_PYTHON=${VENV}/bin/${PYTHON}
+VENV_PIP=${VENV}/bin/pip
+VENV_JUPYTER=${VENV}/bin/jupyter-notebook
+VENV_PYTEST=${VENV}/bin/pytest
 
 all: dist
 
-test: $(VENV)
-	$(call activate); \
-		pip install -r requirements-dev.txt; \
-		pytest --doctest-modules
+run: ${VENV_JUPYTER}
+	${VENV_JUPYTER}
 
-dist: $(VENV)
-	$(call activate); \
-		$(PYTHON) setup.py sdist; \
-		$(PYTHON) setup.py bdist
+test: ${VENV_PYTEST}
+	${VENV_PYTEST} --doctest-modules
 
-venv: $(VENV)
-	@echo -e "*** Enter Virtualenv with \n\n\t. $(VENV)/bin/activate\n"
-$(VENV):
-	$(call deactivate); \
-	virtualenv $@ -p$(PYTHON)
-	$(call activate); \
-		pip install -r requirements.txt; \
-		pip install -e .
+dist: ${VENV}
+	${VENV_PYTHON} setup.py sdist
+	${VENV_PYTHON} setup.py bdist
+
+venv: ${VENV}
+${VENV}: ${VENV_PYTHON}
+	$(info Enter Virtualenv with \n\n\t. $(VENV)/bin/activate)
+${VENV_PYTHON} ${VENV_PIP} \
+	${VENV_JUPYTER}\
+	:
+	$(PYTHON) -m venv ${VENV}
+	${VENV_PIP} install -e .
+${VENV_PYTEST}: ${VENV_PIP}
+	${VENV_PIP} install -e .[tests]
 
 clean: clean-venv clean-pycache
 real-clean: clean-build clean-data clean-dist clean-test clean
@@ -48,6 +47,6 @@ clean-venv:
 	rm -rf $(VENV)
 
 .PHONY: all dist \
-	venv venv-install \
+	venv \
 	clean real-clean \
 	clean-build clean-dist clean-venv

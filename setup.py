@@ -9,15 +9,18 @@ setup(name='geoham',
       url='http://scm.narf.ssji.net/git/geoham',
       package_dir={'': 'src'},
       packages=find_packages(where='src'),
-      setup_requires=[
+      install_requires=[
           'Click',
-          'folium>=0.6.0',
+          'notebook',
+          'folium',
           'pandas',
-          'pytest-runner',
       ],
-      tests_requires=[
-          'pytest',
-      ],
+      extras_require={
+          'tests': [
+              'pytest',
+              'pytest-runner',
+          ],
+      },
       entry_points={
           'console_scripts': [
               'geoham = geoham.cli:main',
