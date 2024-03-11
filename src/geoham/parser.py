@@ -31,19 +31,19 @@ REPEATER_OFFSET = 'Offset'
 FIELD_TYPES = {
     REPEATER_OUTPUT: np.float64,
     REPEATER_INPUT: np.float64,
-    REPEATER_CALL: np.character,
-    REPEATER_MNEMONIC: np.character,
-    REPEATER_LOCATION: np.character,
-    REPEATER_SERVICE_AREA: np.character,
+    REPEATER_CALL: "S",
+    REPEATER_MNEMONIC: "S",
+    REPEATER_LOCATION: "S",
+    REPEATER_SERVICE_AREA: "S",
     REPEATER_LATITUDE: np.float64,
     REPEATER_LONGITUDE: np.float64,
-    REPEATER_STATUS: np.character,
+    REPEATER_STATUS: "S",
     REPEATER_ERP: np.float64,
     REPEATER_HASL: np.float64,
     REPEATER_TO: np.float64,
-    REPEATER_SPONSOR: np.character,
+    REPEATER_SPONSOR: "S",
     REPEATER_TONE: np.float64,
-    REPEATER_NOTES: np.character,
+    REPEATER_NOTES: "S",
 }
 
 FIELD_MAPPING = {
@@ -68,7 +68,7 @@ FIELD_MAPPING = {
     REPEATER_OFFSET: chirp.OFFSET,
 }
 
-NA_FIELDS = ['-', 'Various', '?']
+NA_FIELDS = ['-', 'Various', '?', ' -']
 
 NUM_FIELDS = [k for k in FIELD_TYPES.keys() if FIELD_TYPES[k] == np.float64]
 
@@ -88,9 +88,7 @@ class Parser(LoggableTrait):
                            na_values=NA_FIELDS,
                            header=0,
                            usecols=(list(range(len(FIELD_TYPES)))),
-                           error_bad_lines=False,  # XXX: This will drop rows with too many notes
-                           warn_bad_lines=self._logger.isEnabledFor(
-                               logging.WARNING)
+                           on_bad_lines='warn',  # XXX: This will drop rows with too many notes
                            )
 
         skipped_data = data[(
@@ -114,9 +112,10 @@ class Parser(LoggableTrait):
 
         offsets = round(data[REPEATER_INPUT] - data[REPEATER_OUTPUT], 3)
         # '-' if offsets < 0 else '+'
-        data[REPEATER_DUPLEX] = abs(offsets)/offsets
+        data[REPEATER_DUPLEX] = abs(offsets) / offsets
         data[REPEATER_OFFSET] = abs(offsets)
 
+        return data, skipped_data
         return self.chirp_mapping.remap(data), skipped_data
 
 

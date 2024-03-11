@@ -24,7 +24,9 @@ class TestParser(unittest.TestCase):
         parsed, skipped = parser.parse(f)
 
         self.assertIsNotNone(parsed)
-        self.assertIsNone(skipped)
+        self.assertFalse(parsed.empty)
+        self.assertIsNotNone(skipped)
+        self.assertTrue(skipped.empty)
 
 
 if __name__ == '__main__':
