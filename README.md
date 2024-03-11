@@ -16,14 +16,27 @@ The main building blocks are the [Pandas](https://pandas.pydata.org/) and
 
 ## Installation
 
-    pip install -r requirements.txt
-    python setup.py
+    python install .
 
 See the [Python Notebook](README.ipynb) for the rest of the documentation and
 full wow. You can run it locally in a Jupyter Notebook.
 
     jupyter-notebook
 
+## Usage
+
+There is a `geoham` command-line tool allowing to process the data.
+
+    geoham download
+    geoham parse <FILE>
+    geoham display <FILE>
+    geoham map <FILE>
+
+## Development
+
+    make
+    make test
+
 ## Author
 
-* Olivier Mehani <shtrom+geoham@ssji.net>, VK2SHM
+* Olivier Mehani <shtrom+geoham@ssji.net>, VK7SHM
